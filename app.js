@@ -3,13 +3,11 @@ const app = express();
 
 app.use(express.json());
 
-// Rota de teste
-app.get('/', (req, res) => {
-    res.send('API funcionando');
-});
+const userRoutes = require('./routes/corredor');
 
-// Rotas de usuário
-const userRoutes = require('./routes/user');
+const corredorRoutes = require('./routes/corredor');
+
 app.use('/users', userRoutes);
+app.use('/corredor', userRoutes);
 
 module.exports = app;
