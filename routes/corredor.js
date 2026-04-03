@@ -2,7 +2,7 @@ const express = require('express');
 const userRoutes = express.Router();
 const db = require('../db');
 const { use } = require('./user');
-
+// LISTAR TODOS OS COREDORES
 userRoutes.get('/', (req, res) => {
     db.query('SELECT * FROM corredores', (err, results) => {
         if (err) {
@@ -11,7 +11,7 @@ userRoutes.get('/', (req, res) => {
         }
         res.json(results);
     })});
-
+// CRIAR CORREDOR
     userRoutes.post('/', (req, res) => {
         const { nome, email, senha, turma } = req.body;
     
@@ -33,7 +33,7 @@ userRoutes.get('/', (req, res) => {
             }
         );
     });
-
+// ATUALIZAR CORREDOR
     userRoutes.put('/:id', (req, res) => {
         const { id } = req.params;
         const { nome, email, senha, turma } = req.body;
@@ -56,7 +56,7 @@ userRoutes.get('/', (req, res) => {
         );
     });
     
-
+// DELETAR CORREDOR
     userRoutes.delete('/:id', (req, res) => {
         const { id } = req.params;
     
