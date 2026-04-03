@@ -3,7 +3,7 @@ const app = express();
 
 app.use(express.json());
 
-const userRoutes = require('./routes/corredor');
+const userRoutes = require('./routes/user');
 
 const corredorRoutes = require('./routes/corredor');
 

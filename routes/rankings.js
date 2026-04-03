@@ -69,21 +69,21 @@ router.get('/por-gp', (req, res) => {
 router.get('/por-gp/:data_gp', (req, res) => {
   const { data_gp } = req.params;
 
-  const query = `
-    SELECT 
-      c.id,
-      c.nome,
-      MIN(v.tempo_volta_ms) AS melhor_tempo_ms,
-      COUNT(v.id_volta) AS total_voltas,
-      AVG(v.tempo_volta_ms) AS tempo_medio_ms
-    FROM voltas v
-    INNER JOIN corredores c ON v.id_corredor = c.id
-    WHERE DATE(v.data_hora_inicio) = ? 
-      AND v.status = 'finalizada' 
-      AND v.tempo_volta_ms IS NOT NULL
-    GROUP BY c.id
-    ORDER BY melhor_tempo_ms ASC
-  `;
+ const query = `
+  SELECT 
+    c.id,
+    c.nome,
+    MIN(v.tempo_volta_ms) AS melhor_tempo_ms,
+    COUNT(v.id_volta) AS total_voltas,
+    AVG(v.tempo_volta_ms) AS tempo_medio_ms
+  FROM voltas v
+  INNER JOIN corredores c ON v.id_corredor = c.id
+  WHERE DATE(v.data_hora_inicio) = ?
+    AND v.status = 'finalizada'
+    AND v.tempo_volta_ms IS NOT NULL
+  GROUP BY c.id 
+  ORDER BY melhor_tempo_ms ASC
+`;
 
   db.query(query, [data_gp], (err, results) => {
     if (err) {
