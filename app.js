@@ -9,12 +9,11 @@ const corredorRoutes = require('./routes/corredor');
 
 const voltasRoutes = require('./routes/voltas');
 
-const rankingsRoutes = require('./routes/rankings');
+    
 
 app.use('/users', userRoutes);
 app.use('/corredor', corredorRoutes);
 app.use('/voltas', voltasRoutes);
-app.use('/rankings', rankingsRoutes);
 
 
 module.exports = app;
