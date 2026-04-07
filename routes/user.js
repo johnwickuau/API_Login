@@ -10,7 +10,7 @@ userRoutes.get('/', async (req, res) => {
     } catch (error) {
         console.error('Erro ao buscar usuários: ', error.message);
         res.status(500).json({ erro: error.message });
-    }
+    }   
 });
 
 // CRIAR USUÁRIO

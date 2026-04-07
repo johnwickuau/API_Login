@@ -15,42 +15,48 @@ router.get('/', async (req, res) => {
 
 // CRIAR CORREDOR
 router.post('/', async (req, res) => {
-    const { nome, email, senha, turma } = req.body;
-    if (!nome || !email || !senha || !turma) {
+    const { nome, email, senha, turma, equipe } = req.body;
+
+    if (!nome || !email || !senha || !turma || !equipe) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
 
     try {
         const [result] = await db.query(
-            'INSERT INTO corredores (nome, email, senha, turma) VALUES (?, ?, ?, ?)',
-            [nome, email, senha, turma]
+            'INSERT INTO corredores (nome, email, senha, turma, equipe) VALUES (?, ?, ?, ?, ?)',
+            [nome, email, senha, turma, equipe]
         );
-        res.status(201).json({ id: result.insertId, nome, email, turma });
+
+        res.status(201).json({ id: result.insertId, nome, email, turma, equipe });
+
     } catch (error) {
-        console.error('Erro ao criar corredor: ', error.message);
         res.status(500).json({ erro: error.message });
     }
 });
 
+
 // ATUALIZAR CORREDOR
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { nome, email, senha, turma } = req.body;
-    if (!nome || !email || !senha || !turma) {
+    const { nome, email, senha, turma, equipe } = req.body;
+
+    if (!nome || !email || !senha || !turma || !equipe) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
 
     try {
         const [result] = await db.query(
-            'UPDATE corredores SET nome = ?, email = ?, senha = ?, turma = ? WHERE id = ?',
-            [nome, email, senha, turma, id]
+            'UPDATE corredores SET nome = ?, email = ?, senha = ?, turma = ?, equipe = ? WHERE id = ?',
+            [nome, email, senha, turma, equipe, id]
         );
+
         if (result.affectedRows === 0) {
             return res.status(404).json({ erro: 'Corredor não encontrado' });
         }
+
         res.json({ mensagem: 'Corredor atualizado com sucesso' });
+
     } catch (error) {
-        console.error('Erro ao atualizar corredor: ', error.message);
         res.status(500).json({ erro: error.message });
     }
 });
