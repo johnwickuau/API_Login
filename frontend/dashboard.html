@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RaceFlow</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-dashboard">
+        <!-- Navbar -->
+        <nav class="navbar navbar-dark">
+            <div class="navbar-container">
+                <div class="navbar-logo">
+                    <span class="logo-icon">🏁</span>
+                    <span class="logo-text">RaceFlow</span>
+                </div>
+                <div class="navbar-links">
+                    <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                    <a href="admin.html" class="nav-link" id="adminLink" style="display: none;">Admin</a>
+                    <a href="index.html" class="nav-link" onclick="logout(); return false;">Sair</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Menu</h3>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#inicio" class="menu-item active" data-section="inicio">
+                    <span class="menu-icon">🏠</span>
+                    <span class="menu-text">Início</span>
+                </a>
+                <a href="#corredores" class="menu-item" data-section="corredores">
+                    <span class="menu-icon">🏎️</span>
+                    <span class="menu-text">Corredores</span>
+                </a>
+                <a href="#usuarios" class="menu-item" data-section="usuarios">
+                    <span class="menu-icon">👥</span>
+                    <span class="menu-text">Usuários</span>
+                </a>
+                <a href="#ranking" class="menu-item" data-section="ranking">
+                    <span class="menu-icon">🏆</span>
+                    <span class="menu-text">Rankings</span>
+                </a>
+                <a href="#voltas" class="menu-item" data-section="voltas">
+                    <span class="menu-icon">⚡</span>
+                    <span class="menu-text">Voltas</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Header Welcome -->
+            <div class="dashboard-header">
+                <div class="header-info">
+                    <h1 id="welcomeTitle">Bem-vindo ao Dashboard</h1>
+                    <p id="headerDate"></p>
+                </div>
+                <div class="header-user">
+                    <span id="userNameDisplay"></span>
+                    <span class="user-badge" id="userTypeDisplay"></span>
+                </div>
+            </div>
+
+            <!-- Section: Dashboard Início -->
+            <section id="inicio" class="dashboard-section active">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🏎️</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total de Corredores</span>
+                            <span class="stat-value" id="totalCorredores">--</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👤</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total de Usuários</span>
+                            <span class="stat-value" id="totalUsuarios">--</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total de Voltas</span>
+                            <span class="stat-value" id="totalVoltas">--</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Melhor Volta Geral</span>
+                            <span class="stat-value" id="melhorVoltaGeral">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Performers -->
+                <div class="dashboard-grid">
+                    <!-- Top 5 Melhores Voltas -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>🏆 Top 5 Melhores Voltas</h2>
+                        </div>
+                        <div class="card-body">
+                            <table class="ranking-table">
+                                <thead>
+                                    <tr>
+                                        <th class="rank-col">Pos</th>
+                                        <th>Corredor</th>
+                                        <th>Tempo</th>
+                                        <th>Equipe</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topVoltasBody">
+                                    <!-- Será preenchido por JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Ranking por Equipe -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>🎯 Ranking por Equipe</h2>
+                        </div>
+                        <div class="card-body">
+                            <table class="ranking-table">
+                                <thead>
+                                    <tr>
+                                        <th class="rank-col">Pos</th>
+                                        <th>Equipe</th>
+                                        <th>Pilotos</th>
+                                        <th>Voltas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rankingEquipeBody">
+                                    <!-- Será preenchido por JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Melhor volta por Corredor -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>⚡ Melhor Volta por Corredor (Top 10)</h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Corredor</th>
+                                    <th>Equipe</th>
+                                    <th>Turma</th>
+                                    <th>Melhor Volta</th>
+                                    <th>Total de Voltas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="melhorVoltaCorradorBody">
+                                <!-- Será preenchido por JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Corredores -->
+            <section id="corredores" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Gerenciador de Corredores</h1>
+                    <button class="btn btn-secondary" onclick="openAddCorredorModal()">+ Adicionar Corredor</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Turma</th>
+                                    <th>Equipe</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corredoresTableBody">
+                                <!-- Será preenchido por JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Usuários -->
+            <section id="usuarios" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Gerenciador de Usuários</h1>
+                    <button class="btn btn-secondary" onclick="openAddUsuarioModal()">+ Adicionar Usuário</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Data Cadastro</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usuariosTableBody">
+                                <!-- Será preenchido por JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Ranking -->
+            <section id="ranking" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Rankings Gerais</h1>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>🥇 Ranking Geral de Corredores</h2>
+                        </div>
+                        <div class="card-body">
+                            <table class="ranking-table">
+                                <thead>
+                                    <tr>
+                                        <th class="rank-col">Pos</th>
+                                        <th>Corredor</th>
+                                        <th>Equipe</th>
+                                        <th>Voltas</th>
+                                        <th>Média</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rankingGeralBody">
+                                    <!-- Será preenchido por JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Voltas -->
+            <section id="voltas" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Histórico de Voltas</h1>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Corredor</th>
+                                    <th>Tempo (s)</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="voltasTableBody">
+                                <!-- Será preenchido por JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add/Edit Corredor Modal -->
+    <div id="corredorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="corredorModalTitle">Adicionar Corredor</h2>
+                <button class="modal-close" onclick="closeCorredorModal()">&times;</button>
+            </div>
+            <form id="corredorForm" class="modal-form">
+                <div class="form-group">
+                    <label for="corredorNome">Nome</label>
+                    <input type="text" id="corredorNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="corredorEmail">Email</label>
+                    <input type="email" id="corredorEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="corredorSenha">Senha</label>
+                    <input type="password" id="corredorSenha" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="corredorTurma">Turma</label>
+                        <select id="corredorTurma" required>
+                            <option value="">Selecione</option>
+                            <option value="Turma A">Turma A</option>
+                            <option value="Turma B">Turma B</option>
+                            <option value="Turma C">Turma C</option>
+                            <option value="Turma D">Turma D</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="corredorEquipe">Equipe</label>
+                        <select id="corredorEquipe" required>
+                            <option value="">Selecione</option>
+                            <option value="Red Racing">Red Racing</option>
+                            <option value="Blue Velocity">Blue Velocity</option>
+                            <option value="Silver Speed">Silver Speed</option>
+                            <option value="Gold Thunder">Gold Thunder</option>
+                            <option value="Purple Force">Purple Force</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCorredorModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Usuario Modal -->
+    <div id="usuarioModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="usuarioModalTitle">Adicionar Usuário</h2>
+                <button class="modal-close" onclick="closeUsuarioModal()">&times;</button>
+            </div>
+            <form id="usuarioForm" class="modal-form">
+                <div class="form-group">
+                    <label for="usuarioNome">Nome</label>
+                    <input type="text" id="usuarioNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="usuarioEmail">Email</label>
+                    <input type="email" id="usuarioEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="usuarioSenha">Senha</label>
+                    <input type="password" id="usuarioSenha" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeUsuarioModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Inicializar Dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                checkAuthAndInitialize();
+                setupSectionNavigation();
+                loadDashboardData();
+                updateDateTime();
+                setInterval(updateDateTime, 1000);
+            } catch (error) {
+                console.error('Erro ao inicializar dashboard:', error);
+                alert('Erro ao carregar dashboard: ' + error.message);
+            }
+        });
+
+        function checkAuthAndInitialize() {
+            const userStr = localStorage.getItem('userLoggedIn');
+            
+            if (!userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const user = JSON.parse(userStr);
+                
+                if (!user || !user.email) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const userNameDisplay = document.getElementById('userNameDisplay');
+                const userTypeDisplay = document.getElementById('userTypeDisplay');
+                const welcomeTitle = document.getElementById('welcomeTitle');
+                const adminLink = document.getElementById('adminLink');
+
+                if (userNameDisplay) userNameDisplay.textContent = user.name || 'Usuário';
+                if (userTypeDisplay) userTypeDisplay.textContent = user.type === 'corredor' ? '🏎️ Corredor' : '👤 Usuário';
+                if (welcomeTitle) welcomeTitle.textContent = `Bem-vindo, ${user.name}!`;
+                
+                // Mostrar link de Admin apenas se for admin
+                if (adminLink && user.isAdmin) {
+                    adminLink.style.display = 'inline-block';
+                }
+            } catch (error) {
+                console.error('Erro ao fazer parse do usuário:', error);
+                localStorage.removeItem('userLoggedIn');
+                window.location.href = 'login.html';
+            }
+        }
+
+        function updateDateTime() {
+            try {
+                const now = new Date();
+                const formatDate = now.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const time = now.toLocaleTimeString('pt-BR');
+                const headerDate = document.getElementById('headerDate');
+                if (headerDate) {
+                    headerDate.textContent = `${formatDate} - ${time}`;
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar data/hora:', error);
+            }
+        }
+
+        function setupSectionNavigation() {
+            try {
+                const menuItems = document.querySelectorAll('.menu-item');
+                if (menuItems.length === 0) {
+                    console.warn('Nenhum menu-item encontrado');
+                    return;
+                }
+
+                menuItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const section = this.dataset.section;
+                        if (section) {
+                            showSection(section);
+                            
+                            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                            this.classList.add('active');
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Erro ao setupar navegação de seções:', error);
+            }
+        }
+
+        function showSection(sectionId) {
+            try {
+                document.querySelectorAll('.dashboard-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.add('active');
+                } else {
+                    console.warn(`Seção ${sectionId} não encontrada`);
+                }
+            } catch (error) {
+                console.error('Erro ao exibir seção:', error);
+            }
+        }
+
+        function loadDashboardData() {
+            try {
+                // Dados Mock
+                const corredores = generateMockCorredores();
+                const usuarios = generateMockUsuarios();
+                const voltas = generateMockVoltas();
+
+                // Atualizar stats
+                const totalCorredores = document.getElementById('totalCorredores');
+                const totalUsuarios = document.getElementById('totalUsuarios');
+                const totalVoltas = document.getElementById('totalVoltas');
+                const melhorVoltaGeral = document.getElementById('melhorVoltaGeral');
+
+                if (totalCorredores) totalCorredores.textContent = corredores.length;
+                if (totalUsuarios) totalUsuarios.textContent = usuarios.length;
+                if (totalVoltas) totalVoltas.textContent = voltas.length;
+
+                // Melhor volta geral
+                if (voltas.length > 0) {
+                    const melhor = Math.min(...voltas.map(v => v.tempo));
+                    if (melhorVoltaGeral) melhorVoltaGeral.textContent = `${melhor}s`;
+                } else {
+                    if (melhorVoltaGeral) melhorVoltaGeral.textContent = '--';
+                }
+
+                // Tabelas
+                populateCorredoresTable(corredores);
+                populateUsuariosTable(usuarios);
+                populateVoltasTable(voltas);
+                populateTopVoltas(voltas, corredores);
+                populateRankingEquipe(corredores);
+                populateMelhorVoltaCorredor(corredores, voltas);
+                populateRankingGeral(corredores, voltas);
+                
+                // Esconder cards vazios
+                document.querySelectorAll('.card').forEach(card => {
+                    const tbody = card.querySelector('tbody');
+                    if (tbody && tbody.children.length === 0) {
+                        card.style.display = 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar dados do dashboard:', error);
+                alert('Erro ao carregar dados: ' + error.message);
+            }
+        }
+
+        function generateMockCorredores() {
+            return [];
+        }
+
+        function generateMockUsuarios() {
+            return [];
+        }
+
+        function generateMockVoltas() {
+            return [];
+        }
+
+        function populateCorredoresTable(corredores) {
+            try {
+                const tbody = document.getElementById('corredoresTableBody');
+                if (!tbody) {
+                    console.warn('Elemento corredoresTableBody não encontrado');
+                    return;
+                }
+                tbody.innerHTML = corredores.map(c => `
+                    <tr>
+                        <td>${c.id}</td>
+                        <td>${c.nome}</td>
+                        <td>${c.email}</td>
+                        <td>${c.turma}</td>
+                        <td><span class="badge">${c.equipe}</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-icon" title="Editar">✏️</button>
+                            <button class="btn-icon btn-danger" title="Deletar">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao popular tabela de corredores:', error);
+            }
+        }
+
+        function populateUsuariosTable(usuarios) {
+            try {
+                const tbody = document.getElementById('usuariosTableBody');
+                if (!tbody) {
+                    console.warn('Elemento usuariosTableBody não encontrado');
+                    return;
+                }
+                tbody.innerHTML = usuarios.map(u => `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td>${u.nome}</td>
+                        <td>${u.email}</td>
+                        <td>${u.dataCadastro}</td>
+                        <td class="actions-cell">
+                            <button class="btn-icon" title="Editar">✏️</button>
+                            <button class="btn-icon btn-danger" title="Deletar">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao popular tabela de usuários:', error);
+            }
+        }
+
+        function populateVoltasTable(voltas) {
+            try {
+                const tbody = document.getElementById('voltasTableBody');
+                if (!tbody) {
+                    console.warn('Elemento voltasTableBody não encontrado');
+                    return;
+                }
+                tbody.innerHTML = voltas.map(v => `
+                    <tr>
+                        <td>${v.id}</td>
+                        <td>${v.corredorNome}</td>
+                        <td>${v.tempo}s</td>
+                        <td>${v.data}</td>
+                        <td><span class="badge badge-success">${v.status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao popular tabela de voltas:', error);
+            }
+        }
+
+        function populateTopVoltas(voltas, corredores) {
+            try {
+                const tbody = document.getElementById('topVoltasBody');
+                if (!tbody) {
+                    console.warn('Elemento topVoltasBody não encontrado');
+                    return;
+                }
+                const sorted = [...voltas].sort((a, b) => a.tempo - b.tempo).slice(0, 5);
+                tbody.innerHTML = sorted.map((v, idx) => {
+                    const corredor = corredores.find(c => c.id === v.corredorId);
+                    return `
+                        <tr class="rank-${idx + 1}">
+                            <td class="rank-badge">${idx + 1}</td>
+                            <td>${v.corredorNome}</td>
+                            <td class="rank-time">${v.tempo}s</td>
+                            <td>${corredor?.equipe || '--'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Erro ao popular top voltas:', error);
+            }
+        }
+
+        function populateRankingEquipe(corredores) {
+            try {
+                const tbody = document.getElementById('rankingEquipeBody');
+                if (!tbody) {
+                    console.warn('Elemento rankingEquipeBody não encontrado');
+                    return;
+                }
+                const equipes = {};
+                corredores.forEach(c => {
+                    if (!equipes[c.equipe]) equipes[c.equipe] = [];
+                    equipes[c.equipe].push(c);
+                });
+
+                const ranking = Object.entries(equipes).map(([nome, pilotos]) => ({
+                    nome,
+                    pilotos: pilotos.length,
+                    voltas: Math.floor(Math.random() * 50) + 10
+                })).sort((a, b) => b.voltas - a.voltas);
+
+                tbody.innerHTML = ranking.map((e, idx) => `
+                    <tr class="rank-${idx + 1}">
+                        <td class="rank-badge">${idx + 1}</td>
+                        <td><strong>${e.nome}</strong></td>
+                        <td>${e.pilotos}</td>
+                        <td>${e.voltas}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao popular ranking de equipes:', error);
+            }
+        }
+
+        function populateMelhorVoltaCorredor(corredores, voltas) {
+            try {
+                const tbody = document.getElementById('melhorVoltaCorradorBody');
+                if (!tbody) {
+                    console.warn('Elemento melhorVoltaCorradorBody não encontrado');
+                    return;
+                }
+                const voltasPorCorredor = {};
+                voltas.forEach(v => {
+                    if (!voltasPorCorredor[v.corredorId]) {
+                        voltasPorCorredor[v.corredorId] = [];
+                    }
+                    voltasPorCorredor[v.corredorId].push(v.tempo);
+                });
+
+                const ranking = corredores.map(c => ({
+                    ...c,
+                    melhorVolta: voltasPorCorredor[c.id] ? Math.min(...voltasPorCorredor[c.id]) : '--',
+                    totalVoltas: voltasPorCorredor[c.id]?.length || 0
+                })).filter(c => c.totalVoltas > 0).sort((a, b) => a.melhorVolta - b.melhorVolta).slice(0, 10);
+
+                tbody.innerHTML = ranking.map(c => `
+                    <tr>
+                        <td><strong>${c.nome}</strong></td>
+                        <td><span class="badge">${c.equipe}</span></td>
+                        <td>${c.turma}</td>
+                        <td class="highlight">${c.melhorVolta}s</td>
+                        <td>${c.totalVoltas}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao popular melhor volta por corredor:', error);
+            }
+        }
+
+        function populateRankingGeral(corredores, voltas) {
+            try {
+                const tbody = document.getElementById('rankingGeralBody');
+                if (!tbody) {
+                    console.warn('Elemento rankingGeralBody não encontrado');
+                    return;
+                }
+                const voltasPorCorredor = {};
+                voltas.forEach(v => {
+                    if (!voltasPorCorredor[v.corredorId]) {
+                        voltasPorCorredor[v.corredorId] = [];
+                    }
+                    voltasPorCorredor[v.corredorId].push(v.tempo);
+                });
+
+                const ranking = corredores.map(c => ({
+                    ...c,
+                    totalVoltas: voltasPorCorredor[c.id]?.length || 0,
+                    media: voltasPorCorredor[c.id]?.length ? (voltasPorCorredor[c.id].reduce((a, b) => a + b, 0) / voltasPorCorredor[c.id].length).toFixed(2) : '--'
+                })).filter(c => c.totalVoltas > 0).sort((a, b) => a.media - b.media);
+
+                tbody.innerHTML = ranking.map((c, idx) => `
+                    <tr class="rank-${idx + 1}">
+                        <td class="rank-badge">${idx + 1}</td>
+                        <td><strong>${c.nome}</strong></td>
+                        <td><span class="badge">${c.equipe}</span></td>
+                        <td>${c.totalVoltas}</td>
+                        <td class="highlight">${c.media}s</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao popular ranking geral:', error);
+            }
+        }
+
+        function openAddCorredorModal() {
+            try {
+                const title = document.getElementById('corredorModalTitle');
+                const form = document.getElementById('corredorForm');
+                const modal = document.getElementById('corredorModal');
+                
+                if (title) title.textContent = 'Adicionar Corredor';
+                if (form) form.reset();
+                if (modal) modal.classList.add('active');
+            } catch (error) {
+                console.error('Erro ao abrir modal de corredor:', error);
+            }
+        }
+
+        function closeCorredorModal() {
+            try {
+                const modal = document.getElementById('corredorModal');
+                if (modal) modal.classList.remove('active');
+            } catch (error) {
+                console.error('Erro ao fechar modal de corredor:', error);
+            }
+        }
+
+        function openAddUsuarioModal() {
+            try {
+                const title = document.getElementById('usuarioModalTitle');
+                const form = document.getElementById('usuarioForm');
+                const modal = document.getElementById('usuarioModal');
+                
+                if (title) title.textContent = 'Adicionar Usuário';
+                if (form) form.reset();
+                if (modal) modal.classList.add('active');
+            } catch (error) {
+                console.error('Erro ao abrir modal de usuário:', error);
+            }
+        }
+
+        function closeUsuarioModal() {
+            try {
+                const modal = document.getElementById('usuarioModal');
+                if (modal) modal.classList.remove('active');
+            } catch (error) {
+                console.error('Erro ao fechar modal de usuário:', error);
+            }
+        }
+
+        const corredorForm = document.getElementById('corredorForm');
+        if (corredorForm) {
+            corredorForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Corredor adicionado com sucesso! (Integração com backend aqui)');
+                closeCorredorModal();
+            });
+        }
+
+        const usuarioForm = document.getElementById('usuarioForm');
+        if (usuarioForm) {
+            usuarioForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Usuário adicionado com sucesso! (Integração com backend aqui)');
+                closeUsuarioModal();
+            });
+        }
+
+        function logout() {
+            try {
+                localStorage.removeItem('userLoggedIn');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Erro ao fazer logout:', error);
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
