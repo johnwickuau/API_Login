@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `corridas_db`.`users` (
   `nome` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `senha` VARCHAR(255) NOT NULL,
+  `turma` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id_users`))
 ENGINE = InnoDB;
 

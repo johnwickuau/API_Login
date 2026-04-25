@@ -15,17 +15,17 @@ userRoutes.get('/', async (req, res) => {
 
 // CRIAR USUÁRIO
 userRoutes.post('/', async (req, res) => {
-    const { nome, email, senha } = req.body;
-    if (!nome || !email || !senha) {
+    const { nome, email, senha, turma } = req.body;
+    if (!nome || !email || !senha || !turma) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
 
     try {
         const [result] = await db.query(
-            'INSERT INTO users (nome, email, senha) VALUES (?, ?, ?)',
-            [nome, email, senha]
+            'INSERT INTO users (nome, email, senha, turma) VALUES (?, ?, ?, ?)',
+            [nome, email, senha, turma]
         );
-        res.status(201).json({ id: result.insertId, nome, email });
+        res.status(201).json({ id: result.insertId, nome, email, turma });
     } catch (error) {
         console.error('Erro ao criar usuário: ', error.message);
         res.status(500).json({ erro: error.message });
@@ -35,15 +35,15 @@ userRoutes.post('/', async (req, res) => {
 // ATUALIZAR USUÁRIO
 userRoutes.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { nome, email, senha } = req.body;
-    if (!nome || !email || !senha) {
+    const { nome, email, senha, turma } = req.body;
+    if (!nome || !email || !senha || !turma) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
 
     try {
         const [result] = await db.query(
-            'UPDATE users SET nome = ?, email = ?, senha = ? WHERE id_users = ?',
-            [nome, email, senha, id]
+            'UPDATE users SET nome = ?, email = ?, senha = ?, turma = ? WHERE id_users = ?',
+            [nome, email, senha, turma, id]
         );
         if (result.affectedRows === 0) {
             return res.status(404).json({ erro: 'Usuário não encontrado' });
