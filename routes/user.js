@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoutes = express.Router();
 const db = require('../db');
+const bcrypt = require('bcrypt');
 
 // LISTAR TODOS OS USUÁRIOS
 userRoutes.get('/', async (req, res) => {
@@ -16,6 +17,7 @@ userRoutes.get('/', async (req, res) => {
 // CRIAR USUÁRIO
 userRoutes.post('/', async (req, res) => {
     const { nome, email, senha, turma } = req.body;
+    const senhaHash = await bcrypt.hash(senha, 10); 
     if (!nome || !email || !senha || !turma) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
@@ -23,7 +25,7 @@ userRoutes.post('/', async (req, res) => {
     try {
         const [result] = await db.query(
             'INSERT INTO users (nome, email, senha, turma) VALUES (?, ?, ?, ?)',
-            [nome, email, senha, turma]
+            [nome, email, senhaHash, turma]
         );
         res.status(201).json({ id: result.insertId, nome, email, turma });
     } catch (error) {
@@ -36,6 +38,7 @@ userRoutes.post('/', async (req, res) => {
 userRoutes.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { nome, email, senha, turma } = req.body;
+    const senhaHash2= await bcrypt.hash(senha, 10); 
     if (!nome || !email || !senha || !turma) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
@@ -43,7 +46,7 @@ userRoutes.put('/:id', async (req, res) => {
     try {
         const [result] = await db.query(
             'UPDATE users SET nome = ?, email = ?, senha = ?, turma = ? WHERE id_users = ?',
-            [nome, email, senha, turma, id]
+            [nome, email, senhaHash2, turma, id]
         );
         if (result.affectedRows === 0) {
             return res.status(404).json({ erro: 'Usuário não encontrado' });

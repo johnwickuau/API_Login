@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+const bcrypt = require('bcrypt');
 
 // LISTAR TODOS OS CORREDORES
 router.get('/', async (req, res) => {
@@ -15,8 +16,9 @@ router.get('/', async (req, res) => {
 
 // CRIAR CORREDOR
 router.post('/', async (req, res) => {
+    
     const { nome, email, senha, turma, equipe } = req.body;
-
+    const senhaHash = await bcrypt.hash(senha, 10); 
     if (!nome || !email || !senha || !turma || !equipe) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
@@ -24,7 +26,7 @@ router.post('/', async (req, res) => {
     try {
         const [result] = await db.query(
             'INSERT INTO corredores (nome, email, senha, turma, equipe) VALUES (?, ?, ?, ?, ?)',
-            [nome, email, senha, turma, equipe]
+            [nome, email, senhaHash, turma, equipe]
         );
 
         res.status(201).json({ id: result.insertId, nome, email, turma, equipe });
@@ -39,7 +41,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { nome, email, senha, turma, equipe } = req.body;
-
+    const senhaHash2 = await bcrypt.hash(senha, 10);
     if (!nome || !email || !senha || !turma || !equipe) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
@@ -47,7 +49,7 @@ router.put('/:id', async (req, res) => {
     try {
         const [result] = await db.query(
             'UPDATE corredores SET nome = ?, email = ?, senha = ?, turma = ?, equipe = ? WHERE id = ?',
-            [nome, email, senha, turma, equipe, id]
+            [nome, email, senhaHash2, turma, equipe, id]
         );
 
         if (result.affectedRows === 0) {
@@ -76,4 +78,33 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+// LOGIN DO CORREDOR
+router.post('/login', async (req, res) => {
+    const { email, senha } = req.body;
+    if (!email || !senha) {
+        return res.status(400).json({ erro: 'Email e senha são obrigatórios' });
+    }
+
+    try {
+        const [corredores] = await db.query('SELECT * FROM corredores WHERE email = ?', [email]);
+
+        if (corredores.length === 0) {
+            return res.status(404).json({ erro: 'Corredor não encontrado' });
+        }
+
+        const corredor = corredores[0];
+        const senhaValida = await bcrypt.compare(senha, corredor.senha);
+
+        if (!senhaValida) {
+            return res.status(401).json({ erro: 'Senha incorreta' });
+        }
+
+        res.json({ mensagem: 'Login bem-sucedido', corredor });
+
+    } catch (error) {
+        console.error('Erro ao realizar login: ', error.message);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+module.exports = router;        
