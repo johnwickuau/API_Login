@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // LISTAR TODOS OS CORREDORES
 router.get('/', async (req, res) => {
@@ -78,6 +79,8 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+const JWT_SECRET = process.env.JWT_SECRET; 
+
 // LOGIN DO CORREDOR
 router.post('/login', async (req, res) => {
     const { email, senha } = req.body;
@@ -99,7 +102,24 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ erro: 'Senha incorreta' });
         }
 
-        res.json({ mensagem: 'Login bem-sucedido', corredor });
+        const token = jwt.sign(
+            {
+                id: user.id_users,
+                email: user.email
+            },
+            JWT_SECRET,
+            { expiresIn: '8h' }
+        );
+
+        return res.status(200).json({
+            message: 'Login realizado com sucesso',
+            token,
+            user: {
+                id: user.id_users,
+                nome: user.nome,
+                email: user.email
+            }
+        });
 
     } catch (error) {
         console.error('Erro ao realizar login: ', error.message);

@@ -2,6 +2,7 @@ const express = require('express');
 const userRoutes = express.Router();
 const db = require('../db');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // LISTAR TODOS OS USUÁRIOS
 userRoutes.get('/', async (req, res) => {
@@ -69,6 +70,49 @@ userRoutes.delete('/:id', async (req, res) => {
         res.json({ mensagem: 'Usuário excluído com sucesso' });
     } catch (error) {
         console.error('Erro ao excluir usuário: ', error.message);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+userRoutes.post('/login', async (req, res) => {
+    const { email, senha } = req.body;
+    if (!email || !senha) {
+        return res.status(400).json({ erro: 'Email e senha são obrigatórios' });
+    }
+
+    try {
+        const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        if (rows.length === 0) {
+            return res.status(401).json({ erro: 'Credenciais inválidas' });
+        }
+
+        const user = rows[0];
+        const senhaValida = await bcrypt.compare(senha, user.senha);
+        if (!senhaValida) {
+            return res.status(401).json({ erro: 'Credenciais inválidas' });
+        }
+
+        const token = jwt.sign(
+                    {
+                        id: user.id_users,
+                        email: user.email
+                    },
+                    JWT_SECRET,
+                    { expiresIn: '8h' }
+                );
+        
+                return res.status(200).json({
+                    message: 'Login realizado com sucesso',
+                    token,
+                    user: {
+                        id: user.id_users,
+                        nome: user.nome,
+                        email: user.email
+                    }
+                });
+                
+    } catch (error) {
+        console.error('Erro ao fazer login: ', error.message);
         res.status(500).json({ erro: error.message });
     }
 });
