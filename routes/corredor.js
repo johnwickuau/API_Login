@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 // CRIAR CORREDOR
-router.post('/', async (req, res) => {
+router.post('/cadastro', async (req, res) => {
     
     const { nome, email, senha, turma, equipe } = req.body;
     const senhaHash = await bcrypt.hash(senha, 10); 
@@ -104,20 +104,20 @@ router.post('/login', async (req, res) => {
 
         const token = jwt.sign(
             {
-                id: user.id_users,
-                email: user.email
+                id: corredor.id_corredores, 
+                email: corredor.email
             },
             JWT_SECRET,
             { expiresIn: '8h' }
         );
-
+        
         return res.status(200).json({
             message: 'Login realizado com sucesso',
             token,
-            user: {
-                id: user.id_users,
-                nome: user.nome,
-                email: user.email
+            corredor: {
+                id: corredor.id_corredores,
+                nome: corredor.nome,
+                email: corredor.email
             }
         });
 

@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS `corridas_db`.`users` (
   `nome` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `senha` VARCHAR(255) NOT NULL,
-  `turma` VARCHAR(255) NOT NULL,
+  `turma` VARCHAR(50) NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_users`))
 ENGINE = InnoDB;
 
@@ -36,13 +37,14 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `corridas_db`.`corredores` ;
 
 CREATE TABLE IF NOT EXISTS `corridas_db`.`corredores` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_corredores` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `senha` VARCHAR(255) NOT NULL,
-  `turma` VARCHAR(255) NOT NULL,
-  `equipe` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`))
+  `turma` VARCHAR(50) NOT NULL,
+  `equipe` VARCHAR(100) NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_corredores`))
 ENGINE = InnoDB;
 
 
@@ -53,14 +55,14 @@ DROP TABLE IF EXISTS `corridas_db`.`voltas` ;
 
 CREATE TABLE IF NOT EXISTS `corridas_db`.`voltas` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `tempo` DECIMAL NOT NULL,
-  `data` TIMESTAMP NOT NULL,
-  `corredores_id` INT NOT NULL,
+  `corredor_id` INT NOT NULL,
+  `tempo` DECIMAL(10, 2),
+  `data` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `fk_voltas_corredores_idx` (`corredores_id` ASC) VISIBLE,
+  INDEX `fk_voltas_corredores_idx` (`corredor_id` ASC) VISIBLE,
   CONSTRAINT `fk_voltas_corredores`
-    FOREIGN KEY (`corredores_id`)
-    REFERENCES `corridas_db`.`corredores` (`id`)
+    FOREIGN KEY (`corredor_id`)
+    REFERENCES `corridas_db`.`corredores` (`id_corredores`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

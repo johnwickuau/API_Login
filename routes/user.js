@@ -16,7 +16,7 @@ userRoutes.get('/', async (req, res) => {
 });
 
 // CRIAR USUÁRIO
-userRoutes.post('/', async (req, res) => {
+userRoutes.post('/cadastro', async (req, res) => {
     const { nome, email, senha, turma } = req.body;
     const senhaHash = await bcrypt.hash(senha, 10); 
     if (!nome || !email || !senha || !turma) {
@@ -74,7 +74,12 @@ userRoutes.delete('/:id', async (req, res) => {
     }
 });
 
-userRoutes.post('/login', async (req, res) => {
+
+//LOGIN DO USARIO
+const JWT_SECRET = process.env.JWT_SECRET || 'sua_chave_secreta_aqui';
+
+// LOGIN DO USUÁRIO
+userRoutes.post('/login', async (req, res) => {  // ✅ Sem espaço extra
     const { email, senha } = req.body;
     if (!email || !senha) {
         return res.status(400).json({ erro: 'Email e senha são obrigatórios' });
@@ -93,24 +98,23 @@ userRoutes.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign(
-                    {
-                        id: user.id_users,
-                        email: user.email
-                    },
-                    JWT_SECRET,
-                    { expiresIn: '8h' }
-                );
-        
-                return res.status(200).json({
-                    message: 'Login realizado com sucesso',
-                    token,
-                    user: {
-                        id: user.id_users,
-                        nome: user.nome,
-                        email: user.email
-                    }
-                });
-                
+            {
+                id: user.id_users,
+                email: user.email
+            },
+            JWT_SECRET,
+            { expiresIn: '8h' }
+        );
+
+        return res.status(200).json({
+            message: 'Login realizado com sucesso',
+            token,
+            user: {
+                id: user.id_users,
+                nome: user.nome,
+                email: user.email
+            }
+        });
     } catch (error) {
         console.error('Erro ao fazer login: ', error.message);
         res.status(500).json({ erro: error.message });
